@@ -6,7 +6,7 @@ interface Card {
   points: Number;
   selected: Boolean;
 }
-// TODO see if this can be parametrizes to something like number 5
+// TODO see if this can limit these to certain size
 type Row = Array<Card>;
 type Board = Array<Row>;
 type Hand = Array<Card>;
