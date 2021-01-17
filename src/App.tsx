@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+
+interface Card {
+  number: Number;
+  points: Number;
+  selected: Boolean;
+}
+// TODO see if this can be parametrizes to something like number 5
+type Row = Array<Card>;
+type Board = Array<Row>;
+type Hand = Array<Card>;
+
+interface Player {
+  id: String;
+  points: Number;
+}
+
+interface GameState {
+  board: Board;
+  hands: Array<Hand>;
+  players: Set<Player>;
+  started: boolean;
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const gameState = useState<GameState>({
+    board: [[], [], [], [], []],
+    hands: [],
+    players: new Set(),
+    started: false,
+  });
+
+  return <div className="App">{JSON.stringify(gameState)}</div>;
 }
 
 export default App;
