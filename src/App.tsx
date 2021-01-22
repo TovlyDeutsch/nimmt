@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import firebase from "./firebaseInitialize";
+import useFirebaseRef from "./useFirebaseRef";
 
 interface Card {
   number: Number;
@@ -23,15 +25,38 @@ interface GameState {
   started: boolean;
 }
 
-function App() {
-  const gameState = useState<GameState>({
-    board: [[], [], [], [], []],
-    hands: [],
-    players: new Set(),
-    started: false,
-  });
+// function gameStateMod()
 
-  return <div className="App">{JSON.stringify(gameState)}</div>;
+function App() {
+  const [board, updateBoard, boardLoading] = useFirebaseRef(
+    "testGame1/gameData/board"
+  );
+  // const [gameState, updateGameState] = useState<GameState>({
+  //   board: [[], [], [], [], []],
+  //   hands: [],
+  //   players: new Set(),
+  //   started: false,
+  // });
+
+  function getRandomInt(max: any) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  function addPlayer() {
+    // TODO atempt to update firebase with new state
+    // update react state
+  }
+
+  return (
+    <div className="App">
+      {JSON.stringify(board)}
+      <button
+        onClick={() => {
+          updateBoard([[{ number: getRandomInt(10) }]]);
+        }}
+      ></button>
+    </div>
+  );
 }
 
 export default App;
