@@ -4,6 +4,7 @@ export const NUM_ROWS = 4;
 export const CARDS_PER_ROW = 6;
 export const STARTING_POINTS = 66;
 export const CARDS_PER_DECK = 104;
+export const CARDS_PER_HAND = 10;
 
 export interface Card {
   number: Number;
@@ -60,6 +61,33 @@ function getDealedBoard(deck: Deck): [Deck, Board] {
   return [deck, board];
 }
 
+function dealHandToPlayer(deck: Deck, player: Player): [Deck, Hand] {
+  if (player.hand.length !== 0) {
+    throw new Error("Cannot deal new hand to player with cards in their hand");
+  }
+  let newHand: Hand = [];
+  for (let handIndex = 0; handIndex < CARDS_PER_HAND; handIndex++) {
+    let card;
+    [deck, card] = getRandomCard(deck);
+    newHand.push(card);
+  }
+  return [deck, newHand];
+}
+
+function getDealedPlayers(
+  deck: Deck,
+  players: Array<Player>
+): [Deck, Array<Player>] {
+  let newPlayers = [];
+  for (const player of players) {
+    let hand;
+    [deck, hand] = dealHandToPlayer(deck, player);
+    player.hand = hand;
+    newPlayers.push(player);
+  }
+  return [deck, newPlayers];
+}
+
 export const setUpGame: FirebaseDbUpdater<GameData> = (existingGame) => {
   if (existingGame === null) {
     console.log("settting up game");
@@ -83,10 +111,14 @@ export const startGame: FirebaseDbUpdater<GameData> = (existingGame) => {
 
   console.log("starting up game");
   let deck = genDeck();
-  let board;
+  let board: Board;
+  let players: Array<Player>;
   [deck, board] = getDealedBoard(deck);
+  [deck, players] = getDealedPlayers(deck, existingGame.players);
+
   existingGame.deck = deck;
   existingGame.board = board;
+  existingGame.players = players;
   existingGame.started = true;
   return existingGame;
 };
