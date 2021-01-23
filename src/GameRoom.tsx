@@ -1,17 +1,12 @@
-import React, { useState } from "react";
-import { useFirebaseRef } from "./useFirebaseRef";
+import React from "react";
 import {
-  GameData,
   Board as BoardType,
-  setUpGame,
-  addPlayer,
-  CARDS_PER_ROW,
-  Row as RowType,
   Card as CardType,
+  CARDS_PER_ROW,
+  GameData,
   Hand as HandType,
+  Row as RowType,
 } from "./gameStructures";
-import JoinGame from "./JoinGame";
-import { assert } from "console";
 
 type GameRoomProps = {
   gameData: GameData | null;

@@ -29,10 +29,6 @@ export interface GameData {
   started: boolean;
 }
 
-function genArrayOfEmptyArrays(length: number): Board {
-  return Array.from({ length }, (_x, _i) => []);
-}
-
 function genCard(number: number): Card {
   // TODO figure out how to determine points
   return { number: number, points: 1, selected: false };
