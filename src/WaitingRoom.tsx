@@ -1,13 +1,19 @@
 import { Button } from "@material-ui/core";
+import { Player } from "./gameStructures";
 
 type WaitingRoomProps = {
   onGameStart: () => void;
+  players: Array<Player>;
 };
 
-function WaitingRoom({ onGameStart }: WaitingRoomProps) {
+function WaitingRoom({ onGameStart, players }: WaitingRoomProps) {
   return (
     <div className="waitingRoom center">
-      <h1>Waiting Room</h1>
+      <h1>Players:</h1>
+
+      {players.map((player) => (
+        <p>{player.name}</p>
+      ))}
       {/* TODO add name list */}
       <Button
         onClick={(e) => {

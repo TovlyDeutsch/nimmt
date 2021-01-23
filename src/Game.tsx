@@ -31,8 +31,9 @@ function Game() {
   }, [gameData, updateGameWithFunction]);
 
   console.log(`game started: ${gameData?.started}`);
-
-  if (name === null) {
+  if (gameData === null) {
+    return <p>Loading</p>;
+  } else if (name === null) {
     return (
       <JoinGame
         onNameSubmit={(name) => {
@@ -42,12 +43,13 @@ function Game() {
         disabled={gameDataLoading}
       />
     );
-  } else if (!gameData?.started) {
+  } else if (!gameData.started) {
     return (
       <WaitingRoom
         onGameStart={() => {
           updateGameWithFunction(startGame);
         }}
+        players={gameData.players}
       />
     );
   }
