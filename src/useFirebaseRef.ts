@@ -2,7 +2,19 @@ import { useEffect, useState } from "react";
 
 import firebase from "./firebaseInitialize";
 
-function useFirebaseRef(path: string): [any, (arg0: any) => void, boolean] {
+/**
+ * Takes in existing databaseState and returns new databaseState.
+ * Returns `undefined` if no update should be performed
+ */
+export type FirebaseDbUpdater<T> = (databaseState: T) => T | undefined;
+
+export type StringifiedFirebaseDbUpdater = (
+  databaseStateString: string
+) => string | undefined;
+
+export function useFirebaseRef<T>(
+  path: string
+): [T | null, (valueUpdater: FirebaseDbUpdater<T>) => void, boolean] {
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -10,7 +22,9 @@ function useFirebaseRef(path: string): [any, (arg0: any) => void, boolean] {
     setLoading(true);
     const dataRef = firebase.database().ref(path);
     const update = (snapshot: firebase.database.DataSnapshot) => {
-      setValue(snapshot.val());
+      const retrievedValue = snapshot.val();
+      // console.log(retrievedValue);
+      setValue(retrievedValue === null ? null : JSON.parse(retrievedValue));
       setLoading(false);
     };
     dataRef.on("value", update);
@@ -19,13 +33,17 @@ function useFirebaseRef(path: string): [any, (arg0: any) => void, boolean] {
     };
   }, [path]);
 
-  const updateValue = (newValue: any) => {
+  const updateValueWithFunction = (valueUpdater: FirebaseDbUpdater<T>) => {
     const dataRef = firebase.database().ref(path);
-    // TODO handle set failures or timeouts (set returns a promise)
-    dataRef.set(newValue);
+    const stringifiedWrappedValueUpdater: StringifiedFirebaseDbUpdater = (
+      databaseStateString: string
+    ) => {
+      const newValue = valueUpdater(JSON.parse(databaseStateString));
+      return newValue === undefined ? undefined : JSON.stringify(newValue);
+    };
+    // TODO handle set failures or timeouts (transaction returns a promise)
+    dataRef.transaction(stringifiedWrappedValueUpdater, undefined, false);
   };
 
-  return [value, updateValue, loading];
+  return [value, updateValueWithFunction, loading];
 }
-
-export default useFirebaseRef;
