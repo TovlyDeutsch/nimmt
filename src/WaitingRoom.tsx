@@ -11,8 +11,8 @@ function WaitingRoom({ onGameStart, players }: WaitingRoomProps) {
     <div className="waitingRoom center">
       <h1>Players:</h1>
 
-      {players.map((player) => (
-        <p>{player.name}</p>
+      {players.map((player, i) => (
+        <p key={i}>{player.name}</p>
       ))}
       {/* TODO add name list */}
       <Button
