@@ -37,10 +37,10 @@ function EmptyCard() {
   return <div className="card emptyCard"></div>;
 }
 function Row({ row }: RowProps) {
-  let rowOfCards = row.map((card) => <Card card={card} />);
+  let rowOfCards = row.map((card, i) => <Card card={card} key={i} />);
   console.log(`row length before push ${rowOfCards.length}`);
   for (let i = row.length; i < CARDS_PER_ROW; i++) {
-    rowOfCards.push(<EmptyCard />);
+    rowOfCards.push(<EmptyCard key={i} />);
   }
   console.log(`row length after push ${rowOfCards.length}`);
   return <div className="row">{rowOfCards}</div>;
@@ -49,8 +49,8 @@ function Row({ row }: RowProps) {
 function Board({ board }: BoardProps) {
   return (
     <div className="board">
-      {board.map((row) => (
-        <Row row={row} />
+      {board.map((row, i) => (
+        <Row row={row} key={i} />
       ))}
     </div>
   );
@@ -58,8 +58,8 @@ function Board({ board }: BoardProps) {
 function Hand({ hand }: HandProps) {
   return (
     <div className="hand">
-      {hand.map((card) => (
-        <Card card={card} />
+      {hand.map((card, i) => (
+        <Card card={card} key={i} />
       ))}
     </div>
   );
@@ -80,7 +80,7 @@ function GameRoom({ gameData, name }: GameRoomProps) {
   }
 
   return (
-    <div className="handAndBoard">
+    <div className="gameRoom">
       <Hand hand={hand} />
       <Board board={gameData.board} />
     </div>

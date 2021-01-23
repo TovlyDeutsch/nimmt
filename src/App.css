@@ -28,9 +28,8 @@ form {
   background-color: #c3c3c3;
 }
 
-.board {
-  margin-top: 20px;
-  margin-left: 20px;
+.gameRoom {
+  margin: 50px;
 }
 
 .row {
