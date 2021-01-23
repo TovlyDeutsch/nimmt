@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFirebaseRef } from "./useFirebaseRef";
 import { GameData, setUpGame, addPlayer } from "./gameStructures";
 import JoinGame from "./JoinGame";
+import GameRoom from "./GameRoom";
 
 function Game() {
   // const location = useLocation();
@@ -15,7 +16,12 @@ function Game() {
 
   const [name, setName] = useState<string | null>(null);
 
-  updateGameWithFunction(setUpGame);
+  // TODO figure out how to make this not run only once
+  useEffect(() => {
+    if (gameData === null) {
+      updateGameWithFunction(setUpGame);
+    }
+  }, [gameData, updateGameWithFunction]);
 
   if (name === null) {
     return (
@@ -29,7 +35,7 @@ function Game() {
     );
   }
 
-  return <>{JSON.stringify(gameData)}</>;
+  return <GameRoom gameData={gameData} />;
 }
 
 export default Game;

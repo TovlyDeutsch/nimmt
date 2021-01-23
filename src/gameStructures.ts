@@ -11,8 +11,8 @@ export interface Card {
 }
 
 export type Row = Array<Card>;
-type Board = Array<Row>;
-type Hand = Array<Card>;
+export type Board = Array<Row>;
+export type Hand = Array<Card>;
 
 export interface Player {
   name: String;

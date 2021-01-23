@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, TextField } from "@material-ui/core";
 
 type JoinGamePropTypes = {
   onNameSubmit: (name: string) => void;
@@ -9,22 +10,23 @@ function JoinGame({ onNameSubmit, disabled }: JoinGamePropTypes) {
   const [name, setName] = useState("");
 
   return (
-    <>
-      <label htmlFor="name">Name:</label>
-      <input
-        id="name"
-        type="text"
+    <form>
+      <TextField
+        label="Name"
         onChange={(event) => setName(event.target.value)}
       />
-      <button
+
+      <Button
         onClick={() => {
           onNameSubmit(name);
         }}
         disabled={disabled}
+        color="primary"
+        variant="contained"
       >
         Join
-      </button>
-    </>
+      </Button>
+    </form>
   );
 }
 
