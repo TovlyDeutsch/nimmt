@@ -24,6 +24,7 @@ function Game() {
           updateGameWithFunction(addPlayer(name));
           setName(name);
         }}
+        disabled={gameDataLoading}
       />
     );
   }
