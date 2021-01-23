@@ -2,36 +2,42 @@ import React, { useState } from "react";
 import { useFirebaseRef } from "./useFirebaseRef";
 import {
   GameData,
-  Board,
+  Board as BoardType,
   setUpGame,
   addPlayer,
   CARDS_PER_ROW,
-  Row,
-  Card,
+  Row as RowType,
+  Card as CardType,
+  Hand as HandType,
 } from "./gameStructures";
 import JoinGame from "./JoinGame";
+import { assert } from "console";
 
 type GameRoomProps = {
   gameData: GameData | null;
+  name: string;
 };
 type BoardProps = {
-  board: Board;
+  board: BoardType;
 };
 type RowProps = {
-  row: Row;
+  row: RowType;
 };
 type CardProps = {
-  card: Card;
+  card: CardType;
+};
+type HandProps = {
+  hand: HandType;
 };
 
-function CardComponent({ card }: CardProps) {
+function Card({ card }: CardProps) {
   return <div className="card">{card.number}</div>;
 }
 function EmptyCard() {
   return <div className="card emptyCard"></div>;
 }
-function RowComponent({ row }: RowProps) {
-  let rowOfCards = row.map((card) => <CardComponent card={card} />);
+function Row({ row }: RowProps) {
+  let rowOfCards = row.map((card) => <Card card={card} />);
   console.log(`row length before push ${rowOfCards.length}`);
   for (let i = row.length; i < CARDS_PER_ROW; i++) {
     rowOfCards.push(<EmptyCard />);
@@ -40,19 +46,44 @@ function RowComponent({ row }: RowProps) {
   return <div className="row">{rowOfCards}</div>;
 }
 
-function BoardComponent({ board }: BoardProps) {
+function Board({ board }: BoardProps) {
   return (
     <div className="board">
       {board.map((row) => (
-        <RowComponent row={row} />
+        <Row row={row} />
+      ))}
+    </div>
+  );
+}
+function Hand({ hand }: HandProps) {
+  return (
+    <div className="hand">
+      {hand.map((card) => (
+        <Card card={card} />
       ))}
     </div>
   );
 }
 
-function GameRoom({ gameData }: GameRoomProps) {
+// function H
+
+function GameRoom({ gameData, name }: GameRoomProps) {
+  if (gameData === null) {
+    console.log("no game data");
+    return null;
+  }
+
+  const hand = gameData.players.find((player) => player.name === name)?.hand;
+  if (!hand) {
+    console.log("missing hand");
+    return null;
+  }
+
   return (
-    <div>{gameData !== null && <BoardComponent board={gameData.board} />}</div>
+    <div className="handAndBoard">
+      <Hand hand={hand} />
+      <Board board={gameData.board} />
+    </div>
   );
 }
 

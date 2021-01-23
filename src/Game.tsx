@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useFirebaseRef } from "./useFirebaseRef";
-import { GameData, setUpGame, addPlayer } from "./gameStructures";
+import { GameData, setUpGame, startGame, addPlayer } from "./gameStructures";
 import JoinGame from "./JoinGame";
 import GameRoom from "./GameRoom";
+import WaitingRoom from "./WaitingRoom";
+
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+const BOARD_KEY = "game" + getRandomInt(100000000).toString();
+console.log("loading game " + BOARD_KEY);
 
 function Game() {
   // const location = useLocation();
   // TODO make this based on route
-  const BOARD_KEY = "game1";
+
   let [
     gameData,
     updateGameWithFunction,
@@ -16,12 +24,13 @@ function Game() {
 
   const [name, setName] = useState<string | null>(null);
 
-  // TODO figure out how to make this not run only once
   useEffect(() => {
     if (gameData === null) {
       updateGameWithFunction(setUpGame);
     }
   }, [gameData, updateGameWithFunction]);
+
+  console.log(`game started: ${gameData?.started}`);
 
   if (name === null) {
     return (
@@ -33,9 +42,18 @@ function Game() {
         disabled={gameDataLoading}
       />
     );
+  } else if (!gameData?.started) {
+    return (
+      <WaitingRoom
+        onGameStart={() => {
+          updateGameWithFunction(startGame);
+        }}
+      />
+    );
   }
+  console.log(`rendering game room with name ${name}`);
 
-  return <GameRoom gameData={gameData} />;
+  return <GameRoom gameData={gameData} name={name} />;
 }
 
 export default Game;

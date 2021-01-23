@@ -10,23 +10,28 @@ function JoinGame({ onNameSubmit, disabled }: JoinGamePropTypes) {
   const [name, setName] = useState("");
 
   return (
-    <form>
-      <TextField
-        label="Name"
-        onChange={(event) => setName(event.target.value)}
-      />
-
-      <Button
-        onClick={() => {
+    <div className="center">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
           onNameSubmit(name);
         }}
-        disabled={disabled}
-        color="primary"
-        variant="contained"
       >
-        Join
-      </Button>
-    </form>
+        <TextField
+          label="Name"
+          onChange={(event) => setName(event.target.value)}
+        />
+
+        <Button
+          disabled={disabled}
+          color="primary"
+          variant="contained"
+          type="submit"
+        >
+          Join
+        </Button>
+      </form>
+    </div>
   );
 }
 
