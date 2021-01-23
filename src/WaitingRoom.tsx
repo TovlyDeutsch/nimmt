@@ -14,7 +14,6 @@ function WaitingRoom({ onGameStart, players }: WaitingRoomProps) {
       {players.map((player, i) => (
         <p key={i}>{player.name}</p>
       ))}
-      {/* TODO add name list */}
       <Button
         onClick={(e) => {
           onGameStart();

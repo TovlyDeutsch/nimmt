@@ -52,11 +52,14 @@ function Board({ board }: BoardProps) {
 }
 function Hand({ hand }: HandProps) {
   return (
-    <div className="hand">
-      {hand.map((card, i) => (
-        <Card card={card} key={i} />
-      ))}
-    </div>
+    <>
+      <h2>Your hand:</h2>
+      <div className="hand row">
+        {hand.map((card, i) => (
+          <Card card={card} key={i} />
+        ))}
+      </div>
+    </>
   );
 }
 
