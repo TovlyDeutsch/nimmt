@@ -181,6 +181,7 @@ function insertIntoCardsToPlayIfAllPlayersSelected(
     // if any player hasn't selected a card, don't do anything
     return gameData;
   }
+  cardsToPlay.forEach((card) => (card.selected = false));
   cardsToPlay.sort((playedCard) => playedCard.number);
 
   for (const selectedCard of cardsToPlay) {
