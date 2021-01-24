@@ -53,19 +53,26 @@ type CardsToPlayProps = {
   ) => void;
 };
 
-function animateElement(domNode: HTMLElement, newBoundingBox: ClientRect) {
+function animateElement(
+  domNode: HTMLElement | null,
+  newBoundingBox: ClientRect
+) {
+  if (domNode === null) {
+    return;
+  }
   const currentBox = domNode.getBoundingClientRect();
-  const changeInX = currentBox.left - newBoundingBox.left;
-  const changeInY = currentBox.top - newBoundingBox.top;
+  const changeInX = newBoundingBox.left - currentBox.left;
+  const changeInY = newBoundingBox.top - currentBox.top;
+  console.log(`change x ${changeInX}`);
   requestAnimationFrame(() => {
     // Before the DOM paints, invert child to old position
-    domNode.style.transform = `translate(${changeInX}px ${changeInY}px)`;
+    domNode.style.transform = `translate(${changeInX}px, ${changeInY}px)`;
     domNode.style.transition = "transform 0s";
     requestAnimationFrame(() => {
       // After the previous frame, remove
       // the transistion to play the animation
       domNode.style.transform = "";
-      domNode.style.transition = "transform 500ms";
+      domNode.style.transition = "transform 5000ms";
     });
   });
 }
@@ -79,23 +86,68 @@ function Card({
   ) => {},
   animateFromBoundingBox,
 }: CardProps) {
-  const cardEl: React.Ref<HTMLDivElement> = useRef(null);
-  useEffect(() => {
-    setBoundingBoxForCardToPlay(
-      card.number,
-      cardEl.current?.getBoundingClientRect() ?? null
-    );
-  }, [card, cardEl, setBoundingBoxForCardToPlay]);
+  const measuredPosition = useRef(false);
+  const cardDivRef = useRef<HTMLDivElement | null>(null);
+  const animated = useRef(false);
+
+  // const measuredRef = useCallback((node) => {
+  //   if (node !== null) {
+  //     console.log(`calling for set bbox for ${card.number}`);
+  //     console.log(`node ${node}`);
+  //     console.log(`node ${node.getBoundingClientRect()}`);
+  //     setBoundingBoxForCardToPlay(card.number, node.getBoundingClientRect());
+  //   }
+  // }, []);
 
   useLayoutEffect(() => {
-    if (cardEl.current && animateFromBoundingBox) {
-      animateElement(cardEl.current, animateFromBoundingBox);
+    console.log(`animatefrom bounding ${animateFromBoundingBox}`);
+    console.log(`current el ${cardDivRef.current}`);
+    if (
+      cardDivRef.current &&
+      animated.current === false &&
+      animateFromBoundingBox
+    ) {
+      console.log("going to animate");
+      animateElement(cardDivRef.current, animateFromBoundingBox);
+      animated.current = true;
+      setBoundingBoxForCardToPlay(card.number, null);
+    } else if (measuredPosition.current === false) {
+      if (cardDivRef === null) {
+        return;
+      }
+      console.log(`calling for set bbox for ${card.number}`);
+      console.log(`node ${cardDivRef}`);
+      console.log(`node bbox ${cardDivRef.current!.getBoundingClientRect()}`);
+      measuredPosition.current = true;
+      setBoundingBoxForCardToPlay(
+        card.number,
+        cardDivRef.current!.getBoundingClientRect()
+      );
     }
-  }, [cardEl, animateFromBoundingBox]);
+  }, [
+    card,
+    cardDivRef,
+    animateFromBoundingBox,
+    setBoundingBoxForCardToPlay,
+    animated,
+  ]);
+
+  // const measuredRef = useCallback(
+  //   (node) => {
+  //     if (node !== null && measuredPosition.current === false) {
+  //       console.log(`calling for set bbox for ${card.number}`);
+  //       console.log(`node ${node}`);
+  //       console.log(`node bbox ${node.getBoundingClientRect()}`);
+  //       measuredPosition.current = true;
+  //       setBoundingBoxForCardToPlay(card.number, node.getBoundingClientRect());
+  //     }
+  //   },
+  //   [card, setBoundingBoxForCardToPlay, measuredPosition]
+  // );
 
   return (
     <div
-      ref={cardEl}
+      ref={cardDivRef}
       onClick={() => onCardClick(card)}
       className={classnames({
         card: true,
@@ -110,17 +162,25 @@ function EmptyCard() {
   return <div className="card emptyCard"></div>;
 }
 function Row({ row, onSelectRow, selectable, cardToAnimate }: RowProps) {
-  let rowOfCards = row.map((card, i) => (
-    <Card
-      card={card}
-      key={i}
-      animateFromBoundingBox={
-        cardToAnimate && cardToAnimate[0] === card.number
-          ? cardToAnimate[1]
-          : undefined
-      }
-    />
-  ));
+  console.log(cardToAnimate);
+  let rowOfCards = row.map((card, i) => {
+    console.log(`rendering card ${card.number}`);
+    console.log(
+      cardToAnimate && cardToAnimate[0] === card.number,
+      cardToAnimate
+    );
+    return (
+      <Card
+        card={card}
+        key={i}
+        animateFromBoundingBox={
+          cardToAnimate && cardToAnimate[0] === card.number
+            ? cardToAnimate[1]
+            : undefined
+        }
+      />
+    );
+  });
   console.log(`row length before push ${rowOfCards.length}`);
   for (let i = row.length; i < CARDS_PER_ROW; i++) {
     rowOfCards.push(<EmptyCard key={i} />);
@@ -185,7 +245,7 @@ function Board({
   let cardToAnimate: [number, ClientRect] | undefined;
   if (prevBoard !== board) {
     console.log("new board");
-    if (prevCardsToPlay) {
+    if (prevCardsToPlay?.length > 0) {
       const playedCard = prevCardsToPlay[0];
       cardToAnimate = [
         playedCard.number,
@@ -265,10 +325,12 @@ function GameRoom({ gameData, name, onCardClick, onSelectRow }: GameRoomProps) {
     const boundingBoxCopy = JSON.parse(
       JSON.stringify(cardsToPlayBoundingBoxes[cardNumber])
     );
-    setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => ({
-      ...currentBoundingBoxes,
-      [cardNumber]: null,
-    }));
+    console.log("erasing bbox");
+    // setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => ({
+    //   ...currentBoundingBoxes,
+    //   [cardNumber]: null,
+    // }));
+    console.log(`returning bbox: ${boundingBoxCopy}`);
     return boundingBoxCopy;
   };
 
@@ -276,10 +338,13 @@ function GameRoom({ gameData, name, onCardClick, onSelectRow }: GameRoomProps) {
     cardNumber: number,
     boundingBox: ClientRect | null
   ) => {
-    setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => ({
-      ...currentBoundingBoxes,
-      [cardNumber]: boundingBox,
-    }));
+    setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => {
+      console.log(`getting bbox ${JSON.stringify(boundingBox)}`);
+      return {
+        ...currentBoundingBoxes,
+        [cardNumber]: boundingBox,
+      };
+    });
   };
 
   if (gameData === null) {
