@@ -92,7 +92,7 @@ function GameRoom({ gameData, name, onCardClick }: GameRoomProps) {
     return null;
   }
 
-  // check cardsToPlay for and show pips to click clear row
+  // TODO check cardsToPlay for and show pips to click clear row
 
   return (
     <div className="gameRoom">
