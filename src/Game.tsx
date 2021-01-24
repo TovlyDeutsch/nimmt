@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useFirebaseRef } from "./useFirebaseRef";
-import { GameData, setUpGame, startGame, addPlayer } from "./gameStructures";
-import JoinGame from "./JoinGame";
+import React, { useEffect, useState } from "react";
 import GameRoom from "./GameRoom";
+import {
+  addPlayer,
+  checkEndAndstartNewRoundIfNeccessary,
+  GameData,
+  processCardsToPlay,
+  selectCardForPlayer,
+  setUpGame,
+  startGame,
+} from "./gameStructures";
+import JoinGame from "./JoinGame";
+import { useFirebaseRef } from "./useFirebaseRef";
 import WaitingRoom from "./WaitingRoom";
 
 function getRandomInt(max: number) {
@@ -27,6 +35,10 @@ function Game() {
   useEffect(() => {
     if (gameData === null) {
       updateGameWithFunction(setUpGame);
+    } else if (gameData.cardsToPlay.length !== 0) {
+      updateGameWithFunction(processCardsToPlay);
+    } else if (gameData.started) {
+      updateGameWithFunction(checkEndAndstartNewRoundIfNeccessary);
     }
   }, [gameData, updateGameWithFunction]);
 
@@ -55,7 +67,15 @@ function Game() {
   }
   console.log(`rendering game room with name ${name}`);
 
-  return <GameRoom gameData={gameData} name={name} />;
+  return (
+    <GameRoom
+      gameData={gameData}
+      name={name}
+      onCardClick={(card) => {
+        updateGameWithFunction(selectCardForPlayer(name, card.number));
+      }}
+    />
+  );
 }
 
 export default Game;

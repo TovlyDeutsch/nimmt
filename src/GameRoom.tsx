@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import React from "react";
 import {
   Board as BoardType,
@@ -11,6 +12,7 @@ import {
 type GameRoomProps = {
   gameData: GameData | null;
   name: string;
+  onCardClick?: (card: CardType) => void;
 };
 type BoardProps = {
   board: BoardType;
@@ -20,13 +22,25 @@ type RowProps = {
 };
 type CardProps = {
   card: CardType;
+  onCardClick?: (card: CardType) => void;
 };
 type HandProps = {
   hand: HandType;
+  onCardClick?: (card: CardType) => void;
 };
 
-function Card({ card }: CardProps) {
-  return <div className="card">{card.number}</div>;
+function Card({ card, onCardClick = (card: CardType) => {} }: CardProps) {
+  return (
+    <div
+      onClick={() => onCardClick(card)}
+      className={classnames({
+        card: true,
+        selectedCard: card.selected,
+      })}
+    >
+      {card.number}
+    </div>
+  );
 }
 function EmptyCard() {
   return <div className="card emptyCard"></div>;
@@ -50,13 +64,14 @@ function Board({ board }: BoardProps) {
     </div>
   );
 }
-function Hand({ hand }: HandProps) {
+function Hand({ hand, onCardClick }: HandProps) {
   return (
     <>
       <h2>Your hand:</h2>
       <div className="hand row">
         {hand.map((card, i) => (
-          <Card card={card} key={i} />
+          // TODO disable selection during animation (when their are cards in cardsToPlay)
+          <Card card={card} key={i} onCardClick={onCardClick} />
         ))}
       </div>
     </>
@@ -65,7 +80,7 @@ function Hand({ hand }: HandProps) {
 
 // function H
 
-function GameRoom({ gameData, name }: GameRoomProps) {
+function GameRoom({ gameData, name, onCardClick }: GameRoomProps) {
   if (gameData === null) {
     console.log("no game data");
     return null;
@@ -77,9 +92,11 @@ function GameRoom({ gameData, name }: GameRoomProps) {
     return null;
   }
 
+  // check cardsToPlay for and show pips to click clear row
+
   return (
     <div className="gameRoom">
-      <Hand hand={hand} />
+      <Hand hand={hand} onCardClick={onCardClick} />
       <Board board={gameData.board} />
     </div>
   );
