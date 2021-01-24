@@ -4,7 +4,8 @@ import {
   addPlayer,
   checkEndAndstartNewRoundIfNeccessary,
   GameData,
-  processCardsToPlay,
+  playCardInRow,
+  processNextCardToPlay,
   selectCardForPlayer,
   setUpGame,
   startGame,
@@ -33,10 +34,11 @@ function Game() {
   const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
+    // TODO make these into one function
     if (gameData === null) {
       updateGameWithFunction(setUpGame);
     } else if (gameData.cardsToPlay.length !== 0) {
-      updateGameWithFunction(processCardsToPlay);
+      updateGameWithFunction(processNextCardToPlay);
     } else if (gameData.started) {
       updateGameWithFunction(checkEndAndstartNewRoundIfNeccessary);
     }
@@ -73,6 +75,9 @@ function Game() {
       name={name}
       onCardClick={(card) => {
         updateGameWithFunction(selectCardForPlayer(name, card.number));
+      }}
+      onSelectRow={(rowIndex) => {
+        updateGameWithFunction(playCardInRow(rowIndex, true));
       }}
     />
   );
