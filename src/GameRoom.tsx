@@ -221,7 +221,7 @@ function Board({
   onCardAddedToBoard,
 }: BoardProps) {
   const prevBoard = usePrevious(board);
-  const prevCardsToPlay = usePrevious(cardsToPlay);
+  const prevCardsToPlay: PlayedCard[] = usePrevious(cardsToPlay);
 
   let selectableRows = false;
   const waitingCard = cardsToPlay.find(
@@ -233,13 +233,19 @@ function Board({
   }
 
   let cardToAnimate: [number, ClientRect] | undefined;
-  if (prevBoard !== board) {
+  if (prevBoard !== board && prevCardsToPlay) {
     console.log("new board");
-    if (prevCardsToPlay?.length > 0) {
-      const playedCard = prevCardsToPlay[0];
+    let changedCard;
+    for (let [i, card] of prevCardsToPlay.entries()) {
+      if (card.cardState !== cardsToPlay[i].cardState) {
+        changedCard = card;
+        break;
+      }
+    }
+    if (changedCard) {
       cardToAnimate = [
-        playedCard.number,
-        getCardToPlayBoundingBox(playedCard.number),
+        changedCard.number,
+        getCardToPlayBoundingBox(changedCard.number),
       ];
     }
   }
