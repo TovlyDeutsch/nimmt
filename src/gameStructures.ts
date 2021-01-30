@@ -263,15 +263,17 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
       card.cardState !== CardState.onBoard &&
       card.cardState !== CardState.playingAnimation
   );
-
+  console.log(`card to play index: ${cardToPlayIndex}`);
   // wait for animation to finish
   if (
     cardToPlayIndex > 0 &&
     gameData.cardsToPlay[cardToPlayIndex - 1].cardState ===
       CardState.playingAnimation
   ) {
+    console.log(`stopping early b/c previous card is animating`);
     return undefined;
   }
+  console.log("got past stopping early");
 
   if (
     gameData.cardsToPlay.every((card) => card.cardState === CardState.onBoard)
@@ -341,6 +343,9 @@ export const playCardInRow = (rowIndex: number, clear: boolean) => {
 export const markCardInBoard = (cardToPlayIndex: number) => {
   const markCardInBoard: FirebaseDbUpdater<GameData> = (gameData) => {
     console.log("mark in board");
+    if (gameData.cardsToPlay[cardToPlayIndex] === undefined) {
+      return undefined;
+    }
     gameData.cardsToPlay[cardToPlayIndex].cardState = CardState.onBoard;
     return gameData;
   };

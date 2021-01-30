@@ -228,17 +228,27 @@ function Board({
     (card) => card.cardState === CardState.waitingOnPlayer
   );
 
-  if (cardsToPlay.length > 0 && waitingCard && waitingCard.playerName) {
+  if (
+    cardsToPlay.length > 0 &&
+    waitingCard &&
+    waitingCard.playerName === playerName
+  ) {
     selectableRows = true;
   }
 
   let cardToAnimate: [number, ClientRect] | undefined;
-  if (prevBoard !== board && prevCardsToPlay) {
+  let cardToPlayIndex: number | undefined;
+  if (
+    prevBoard !== board &&
+    prevCardsToPlay &&
+    prevCardsToPlay.length === cardsToPlay.length
+  ) {
     console.log("new board");
     let changedCard;
     for (let [i, card] of prevCardsToPlay.entries()) {
       if (card.cardState !== cardsToPlay[i].cardState) {
         changedCard = card;
+        cardToPlayIndex = i;
         break;
       }
     }
@@ -261,7 +271,10 @@ function Board({
           selectable={selectableRows}
           cardToAnimate={cardToAnimate}
           setCardInBoard={() => {
-            onCardAddedToBoard(0);
+            console.log(`Card to play index ${cardToPlayIndex}`);
+            if (cardToPlayIndex !== undefined) {
+              onCardAddedToBoard(cardToPlayIndex);
+            }
           }}
         />
       ))}
