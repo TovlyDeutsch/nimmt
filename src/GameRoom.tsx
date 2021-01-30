@@ -11,6 +11,7 @@ import {
   PlayedCard,
   Row as RowType,
 } from "./gameStructures";
+import { PlayerList } from "./PlayerList";
 
 type GameRoomProps = {
   gameData: GameData | null;
@@ -355,27 +356,30 @@ function GameRoom({
 
   return (
     <div className="gameRoom">
-      <Hand
-        hand={hand}
-        onCardClick={onCardClick}
-        disabled={gameData.cardsToPlay.length !== 0}
-      />
-      <div className="boardAndCardsToPlay">
-        <Board
-          board={gameData.board}
-          cardsToPlay={gameData.cardsToPlay}
-          onSelectRow={onSelectRow}
-          playerName={name}
-          getCardToPlayBoundingBox={getCardToPlayBoundingBox}
-          onCardAddedToBoard={onCardAddedToBoard}
+      <div className="handAndBoard">
+        <Hand
+          hand={hand}
+          onCardClick={onCardClick}
+          disabled={gameData.cardsToPlay.length !== 0}
         />
-        {gameData.cardsToPlay.length !== 0 && (
-          <CardsToPlay
+        <div className="boardAndCardsToPlay">
+          <Board
+            board={gameData.board}
             cardsToPlay={gameData.cardsToPlay}
-            setBoundingBoxForCardToPlay={setBoundingBoxForCardToPlay}
+            onSelectRow={onSelectRow}
+            playerName={name}
+            getCardToPlayBoundingBox={getCardToPlayBoundingBox}
+            onCardAddedToBoard={onCardAddedToBoard}
           />
-        )}
+          {gameData.cardsToPlay.length !== 0 && (
+            <CardsToPlay
+              cardsToPlay={gameData.cardsToPlay}
+              setBoundingBoxForCardToPlay={setBoundingBoxForCardToPlay}
+            />
+          )}
+        </div>
       </div>
+      <PlayerList players={gameData.players} />
     </div>
   );
 }
