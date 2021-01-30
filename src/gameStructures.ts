@@ -57,42 +57,70 @@ function genDeck() {
   );
 }
 
-function getRandomCard(deck: Deck): Card {
-  const cardIndex = Math.floor(Math.random() * deck.length);
-  const card = deck[cardIndex];
-  deck.splice(cardIndex, 1);
+function genDeckFromNumbers(numbers: number[]): Deck {
+  return numbers.map((number) => genCard(number, CardState.inDeck));
+}
+
+function genListOfNumbers() {
+  return Array.from({ length: CARDS_PER_DECK }, (_x, i) => i);
+}
+
+function reshuffleDiscard(gameData: GameData) {
+  const cardsOut = new Set();
+  for (const player of gameData.players) {
+    player.hand.forEach((card) => cardsOut.add(card));
+  }
+  for (const row of gameData.board) {
+    row.forEach((card) => cardsOut.add(card));
+  }
+  const allCards = new Set(genListOfNumbers());
+
+  let intersection = new Set([...allCards].filter((x) => cardsOut.has(x)));
+
+  gameData.deck = genDeckFromNumbers(Array.from(intersection));
+
+  // TODO
+}
+
+function getRandomCard(gameData: GameData): Card {
+  if (gameData.deck.length <= 0) {
+    reshuffleDiscard(gameData);
+  }
+  const cardIndex = Math.floor(Math.random() * gameData.deck.length);
+  const card = gameData.deck[cardIndex];
+  gameData.deck.splice(cardIndex, 1);
   return card;
 }
 
-function getFreshRow(deck: Deck): Row {
-  const card = getRandomCard(deck);
+function getFreshRow(gameData: GameData): Row {
+  const card = getRandomCard(gameData);
   return [card];
 }
 
-function getDealedBoard(deck: Deck): Board {
+function getDealedBoard(gameData: GameData): Board {
   let board: Board = [];
   for (let rowIndex = 0; rowIndex < NUM_ROWS; rowIndex++) {
-    const row = getFreshRow(deck);
+    const row = getFreshRow(gameData);
     board.push(row);
   }
   return board;
 }
 
-function dealHandToPlayer(deck: Deck, player: Player) {
+function dealHandToPlayer(gameData: GameData, player: Player) {
   if (player.hand.length !== 0) {
     throw new Error("Cannot deal new hand to player with cards in their hand");
   }
   let newHand: Hand = [];
   for (let handIndex = 0; handIndex < CARDS_PER_HAND; handIndex++) {
-    const card = getRandomCard(deck);
+    const card = getRandomCard(gameData);
     newHand.push(card);
   }
   player.hand = newHand;
 }
 
-function dealPlayers(deck: Deck, players: Array<Player>) {
+function dealPlayers(gameData: GameData, players: Array<Player>) {
   for (const player of players) {
-    dealHandToPlayer(deck, player);
+    dealHandToPlayer(gameData, player);
   }
 }
 
@@ -113,8 +141,8 @@ export const setUpGame: FirebaseDbUpdater<GameData> = (existingGame) => {
 };
 
 const startNewRound = (gameData: GameData) => {
-  gameData.board = getDealedBoard(gameData.deck);
-  dealPlayers(gameData.deck, gameData.players);
+  gameData.board = getDealedBoard(gameData);
+  dealPlayers(gameData, gameData.players);
 };
 
 export const startGame: FirebaseDbUpdater<GameData> = (existingGame) => {
