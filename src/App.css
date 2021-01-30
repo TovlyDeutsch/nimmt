@@ -81,3 +81,12 @@ form {
   flex-grow: 1;
   text-align: right;
 }
+
+.cardsToPlay {
+  display: flex;
+}
+
+.cardToPlay {
+  margin-left: 20px;
+  text-align: center;
+}

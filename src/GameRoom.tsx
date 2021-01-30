@@ -224,11 +224,11 @@ function Board({
   const prevCardsToPlay = usePrevious(cardsToPlay);
 
   let selectableRows = false;
-  if (
-    cardsToPlay.length > 0 &&
-    cardsToPlay[0].playerName &&
-    cardsToPlay[0].cardState === CardState.waitingOnPlayer
-  ) {
+  const waitingCard = cardsToPlay.find(
+    (card) => card.cardState === CardState.waitingOnPlayer
+  );
+
+  if (cardsToPlay.length > 0 && waitingCard && waitingCard.playerName) {
     selectableRows = true;
   }
 
@@ -286,7 +286,7 @@ function CardsToPlay({
   return (
     <div className="cardsToPlay">
       {cardsToPlay.map((card, i) => (
-        <div>
+        <div className="cardToPlay">
           <h2>{card.playerName}</h2>
           {card.cardState !== CardState.onBoard &&
             card.cardState !== CardState.playingAnimation && (
