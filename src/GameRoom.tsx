@@ -1,6 +1,6 @@
 import { Button } from "@material-ui/core";
 import classnames from "classnames";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Board as BoardType,
   Card as CardType,
@@ -204,13 +204,13 @@ function Row({
   return <div className="row">{rowOfCards}</div>;
 }
 
-function usePrevious(value: any): any | undefined {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = JSON.parse(JSON.stringify(value));
-  });
-  return ref.current;
-}
+// function usePrevious(value: any): any | undefined {
+//   const ref = useRef();
+//   useEffect(() => {
+//     ref.current = JSON.parse(JSON.stringify(value));
+//   });
+//   return ref.current;
+// }
 
 function Board({
   board,
