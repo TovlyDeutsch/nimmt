@@ -12,6 +12,7 @@ export enum CardState {
   onBoard,
   inHand,
   inDeck,
+  playingAnimation,
 }
 
 export interface Card {
@@ -227,7 +228,22 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
   if (gameData.cardsToPlay.length === 0) {
     return undefined;
   }
-  const cardToPlay = gameData.cardsToPlay[0];
+  const cardToPlayIndex = gameData.cardsToPlay.findIndex(
+    (card) =>
+      card.cardState !== CardState.onBoard &&
+      card.cardState !== CardState.playingAnimation
+  );
+
+  if (
+    gameData.cardsToPlay.every((card) => card.cardState === CardState.onBoard)
+  ) {
+    gameData.cardsToPlay = [];
+    return gameData;
+  }
+  if (cardToPlayIndex === -1) {
+    return undefined;
+  }
+  const cardToPlay = gameData.cardsToPlay[cardToPlayIndex];
   if (
     cardToPlay.cardState === CardState.readyToPlay ||
     cardToPlay.cardState === CardState.waitingOnPlayer
@@ -246,12 +262,12 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
   }
   if (rowIndex === null) {
     console.log("card waiting on player");
-    gameData.cardsToPlay[0].cardState = CardState.waitingOnPlayer;
+    gameData.cardsToPlay[cardToPlayIndex].cardState = CardState.waitingOnPlayer;
     return gameData;
   }
 
-  const row = gameData.board[rowIndex];
-  gameData.board[rowIndex][row.length - 1].cardState = CardState.readyToPlay;
+  // const row = gameData.board[rowIndex];
+  // gameData.board[rowIndex][row.length - 1].cardState = CardState.readyToPlay;
   playCardInRow(rowIndex, false)(gameData);
 
   return gameData;
@@ -259,19 +275,37 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
 
 export const playCardInRow = (rowIndex: number, clear: boolean) => {
   const playCardInRow: FirebaseDbUpdater<GameData> = (gameData) => {
-    const cardToPlay = gameData.cardsToPlay[0];
+    const cardToPlayIndex = gameData.cardsToPlay.findIndex(
+      (card) =>
+        card.cardState !== CardState.onBoard &&
+        card.cardState !== CardState.playingAnimation
+    );
+    if (cardToPlayIndex === -1) {
+      return undefined;
+    }
+    const cardToPlay = gameData.cardsToPlay[cardToPlayIndex];
     if (gameData.board[rowIndex].length === 5 || clear) {
       const player = getPlayerByName(gameData.players, cardToPlay.playerName);
       deductRowForPlayer(player, gameData.board[rowIndex]);
       gameData.board[rowIndex] = [];
     }
+    cardToPlay.cardState = CardState.playingAnimation;
     gameData.board[rowIndex].push(cardToPlay);
-    gameData.cardsToPlay.shift();
+    // gameData.cardsToPlay.shift();
     cardToPlay.selected = false;
-    cardToPlay.cardState = CardState.onBoard;
+    // cardToPlay.cardState = CardState.onBoard;
     return gameData;
   };
   return playCardInRow;
+};
+
+export const markCardInBoard = (cardToPlayIndex: number) => {
+  const markCardInBoard: FirebaseDbUpdater<GameData> = (gameData) => {
+    console.log("mark in board");
+    gameData.cardsToPlay[cardToPlayIndex].cardState = CardState.onBoard;
+    return gameData;
+  };
+  return markCardInBoard;
 };
 
 export const checkEnd = (players: Array<Player>) => {

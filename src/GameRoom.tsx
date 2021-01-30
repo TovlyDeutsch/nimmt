@@ -17,6 +17,7 @@ type GameRoomProps = {
   name: string;
   onCardClick?: (card: CardType) => void;
   onSelectRow: (rowIndex: number) => void;
+  onCardAddedToBoard: (cardToPlayIndex: number) => void;
 };
 type BoardProps = {
   board: BoardType;
@@ -24,12 +25,14 @@ type BoardProps = {
   onSelectRow: (rowIndex: number) => void;
   playerName: string;
   getCardToPlayBoundingBox: (cardNumber: number) => ClientRect;
+  onCardAddedToBoard: (cardNumber: number) => void;
 };
 type RowProps = {
   row: RowType;
   onSelectRow: () => void;
   selectable: boolean;
   cardToAnimate: [number, ClientRect] | undefined;
+  setCardInBoard?: () => void;
 };
 type CardProps = {
   card: CardType;
@@ -39,6 +42,7 @@ type CardProps = {
     boundingBox: ClientRect | null
   ) => void;
   animateFromBoundingBox?: ClientRect;
+  setCardInBoard?: () => void;
 };
 type HandProps = {
   hand: HandType;
@@ -55,7 +59,8 @@ type CardsToPlayProps = {
 
 function animateElement(
   domNode: HTMLElement | null,
-  newBoundingBox: ClientRect
+  newBoundingBox: ClientRect,
+  setCardInBoard: () => void
 ) {
   if (domNode === null) {
     return;
@@ -64,6 +69,8 @@ function animateElement(
   const changeInX = newBoundingBox.left - currentBox.left;
   const changeInY = newBoundingBox.top - currentBox.top;
   console.log(`change x ${changeInX}`);
+  const animationTime = 5000;
+
   requestAnimationFrame(() => {
     // Before the DOM paints, invert child to old position
     domNode.style.transform = `translate(${changeInX}px, ${changeInY}px)`;
@@ -72,7 +79,8 @@ function animateElement(
       // After the previous frame, remove
       // the transistion to play the animation
       domNode.style.transform = "";
-      domNode.style.transition = "transform 5000ms";
+      domNode.style.transition = `transform ${animationTime}ms`;
+      setTimeout(setCardInBoard, animationTime);
     });
   });
 }
@@ -84,6 +92,9 @@ function Card({
     cardNumber: number,
     boundingBox: ClientRect | null
   ) => {},
+  setCardInBoard = () => {
+    console.log("default");
+  },
   animateFromBoundingBox,
 }: CardProps) {
   const measuredPosition = useRef(false);
@@ -108,7 +119,11 @@ function Card({
       animateFromBoundingBox
     ) {
       console.log("going to animate");
-      animateElement(cardDivRef.current, animateFromBoundingBox);
+      animateElement(
+        cardDivRef.current,
+        animateFromBoundingBox,
+        setCardInBoard
+      );
       animated.current = true;
       setBoundingBoxForCardToPlay(card.number, null);
     } else if (measuredPosition.current === false) {
@@ -130,6 +145,7 @@ function Card({
     animateFromBoundingBox,
     setBoundingBoxForCardToPlay,
     animated,
+    setCardInBoard,
   ]);
 
   // const measuredRef = useCallback(
@@ -161,7 +177,13 @@ function Card({
 function EmptyCard() {
   return <div className="card emptyCard"></div>;
 }
-function Row({ row, onSelectRow, selectable, cardToAnimate }: RowProps) {
+function Row({
+  row,
+  onSelectRow,
+  selectable,
+  cardToAnimate,
+  setCardInBoard,
+}: RowProps) {
   console.log(cardToAnimate);
   let rowOfCards = row.map((card, i) => {
     console.log(`rendering card ${card.number}`);
@@ -178,6 +200,7 @@ function Row({ row, onSelectRow, selectable, cardToAnimate }: RowProps) {
             ? cardToAnimate[1]
             : undefined
         }
+        setCardInBoard={setCardInBoard}
       />
     );
   });
@@ -229,6 +252,7 @@ function Board({
   onSelectRow,
   playerName,
   getCardToPlayBoundingBox,
+  onCardAddedToBoard,
 }: BoardProps) {
   const prevBoard = usePrevious(board);
   const prevCardsToPlay = usePrevious(cardsToPlay);
@@ -264,6 +288,9 @@ function Board({
           onSelectRow={() => onSelectRow(i)}
           selectable={selectableRows}
           cardToAnimate={cardToAnimate}
+          setCardInBoard={() => {
+            onCardAddedToBoard(0);
+          }}
         />
       ))}
     </div>
@@ -295,11 +322,14 @@ function CardsToPlay({
       {cardsToPlay.map((card, i) => (
         <div>
           <h2>{card.playerName}</h2>
-          <Card
-            card={card}
-            key={i}
-            setBoundingBoxForCardToPlay={setBoundingBoxForCardToPlay}
-          />
+          {card.cardState !== CardState.onBoard &&
+            card.cardState !== CardState.playingAnimation && (
+              <Card
+                card={card}
+                key={i}
+                setBoundingBoxForCardToPlay={setBoundingBoxForCardToPlay}
+              />
+            )}
         </div>
       ))}
     </div>
@@ -308,7 +338,13 @@ function CardsToPlay({
 
 // function H
 
-function GameRoom({ gameData, name, onCardClick, onSelectRow }: GameRoomProps) {
+function GameRoom({
+  gameData,
+  name,
+  onCardClick,
+  onSelectRow,
+  onCardAddedToBoard,
+}: GameRoomProps) {
   type BoundingBoxes = Record<number, ClientRect | null>;
   const [cardsToPlayBoundingBoxes, setCardsToPlayBoundingBoxes]: [
     BoundingBoxes,
@@ -374,6 +410,7 @@ function GameRoom({ gameData, name, onCardClick, onSelectRow }: GameRoomProps) {
           onSelectRow={onSelectRow}
           playerName={name}
           getCardToPlayBoundingBox={getCardToPlayBoundingBox}
+          onCardAddedToBoard={onCardAddedToBoard}
         />
         {gameData.cardsToPlay.length !== 0 && (
           <CardsToPlay

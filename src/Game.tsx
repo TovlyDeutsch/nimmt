@@ -4,6 +4,7 @@ import {
   addPlayer,
   checkEndAndstartNewRoundIfNeccessary,
   GameData,
+  markCardInBoard,
   playCardInRow,
   processNextCardToPlay,
   selectCardForPlayer,
@@ -78,6 +79,9 @@ function Game() {
       }}
       onSelectRow={(rowIndex) => {
         updateGameWithFunction(playCardInRow(rowIndex, true));
+      }}
+      onCardAddedToBoard={(cardToPlayIndex) => {
+        updateGameWithFunction(markCardInBoard(cardToPlayIndex));
       }}
     />
   );
