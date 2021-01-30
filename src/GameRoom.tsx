@@ -220,8 +220,8 @@ function Board({
   getCardToPlayBoundingBox,
   onCardAddedToBoard,
 }: BoardProps) {
-  const prevBoard = usePrevious(board);
-  const prevCardsToPlay: PlayedCard[] = usePrevious(cardsToPlay);
+  // const prevBoard = usePrevious(board);
+  // const prevCardsToPlay: PlayedCard[] = usePrevious(cardsToPlay);
 
   let selectableRows = false;
   const waitingCard = cardsToPlay.find(
