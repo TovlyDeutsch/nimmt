@@ -264,6 +264,15 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
       card.cardState !== CardState.playingAnimation
   );
 
+  // wait for animation to finish
+  if (
+    cardToPlayIndex > 0 &&
+    gameData.cardsToPlay[cardToPlayIndex - 1].cardState ===
+      CardState.playingAnimation
+  ) {
+    return undefined;
+  }
+
   if (
     gameData.cardsToPlay.every((card) => card.cardState === CardState.onBoard)
   ) {
