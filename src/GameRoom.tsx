@@ -69,7 +69,7 @@ function animateElement(
   const changeInX = newBoundingBox.left - currentBox.left;
   const changeInY = newBoundingBox.top - currentBox.top;
   console.log(`change x ${changeInX}`);
-  const animationTime = 5000;
+  const animationTime = 2000;
 
   requestAnimationFrame(() => {
     // Before the DOM paints, invert child to old position
@@ -79,7 +79,7 @@ function animateElement(
       // After the previous frame, remove
       // the transistion to play the animation
       domNode.style.transform = "";
-      domNode.style.transition = `transform ${animationTime}ms`;
+      domNode.style.transition = `transform ${animationTime}ms ease-in-out`;
       setTimeout(setCardInBoard, animationTime);
     });
   });
