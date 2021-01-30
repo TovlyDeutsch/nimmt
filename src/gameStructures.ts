@@ -211,7 +211,9 @@ function insertIntoCardsToPlayIfAllPlayersSelected(
     return gameData;
   }
   cardsToPlay.forEach((card) => (card.selected = false));
-  cardsToPlay.sort((playedCard) => playedCard.number);
+  cardsToPlay.sort(
+    (playedCard1, playedCard2) => playedCard1.number - playedCard2.number
+  );
 
   for (const selectedCard of cardsToPlay) {
     const player = getPlayerByName(gameData.players, selectedCard.playerName);
