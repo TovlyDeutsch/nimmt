@@ -101,15 +101,6 @@ function Card({
   const cardDivRef = useRef<HTMLDivElement | null>(null);
   const animated = useRef(false);
 
-  // const measuredRef = useCallback((node) => {
-  //   if (node !== null) {
-  //     console.log(`calling for set bbox for ${card.number}`);
-  //     console.log(`node ${node}`);
-  //     console.log(`node ${node.getBoundingClientRect()}`);
-  //     setBoundingBoxForCardToPlay(card.number, node.getBoundingClientRect());
-  //   }
-  // }, []);
-
   useLayoutEffect(() => {
     console.log(`animatefrom bounding ${animateFromBoundingBox}`);
     console.log(`current el ${cardDivRef.current}`);
@@ -147,19 +138,6 @@ function Card({
     animated,
     setCardInBoard,
   ]);
-
-  // const measuredRef = useCallback(
-  //   (node) => {
-  //     if (node !== null && measuredPosition.current === false) {
-  //       console.log(`calling for set bbox for ${card.number}`);
-  //       console.log(`node ${node}`);
-  //       console.log(`node bbox ${node.getBoundingClientRect()}`);
-  //       measuredPosition.current = true;
-  //       setBoundingBoxForCardToPlay(card.number, node.getBoundingClientRect());
-  //     }
-  //   },
-  //   [card, setBoundingBoxForCardToPlay, measuredPosition]
-  // );
 
   return (
     <div
@@ -224,19 +202,6 @@ function Row({
   console.log(`row length after push ${rowOfCards.length}`);
   return <div className="row">{rowOfCards}</div>;
 }
-
-// const calculateBoundingBoxes = (children: React.ReactElement) => {
-//   const boundingBoxes = {};
-
-//   React.Children.forEach(children, child => {
-//     const domNode = child.ref.current;
-//     const nodeBoundingBox = domNode.getBoundingClientRect();
-
-//     boundingBoxes[child.key] = nodeBoundingBox;
-//   });
-
-//   return boundingBoxes;
-// };
 
 function usePrevious(value: any): any | undefined {
   const ref = useRef();
@@ -361,12 +326,6 @@ function GameRoom({
     const boundingBoxCopy = JSON.parse(
       JSON.stringify(cardsToPlayBoundingBoxes[cardNumber])
     );
-    console.log("erasing bbox");
-    // setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => ({
-    //   ...currentBoundingBoxes,
-    //   [cardNumber]: null,
-    // }));
-    console.log(`returning bbox: ${boundingBoxCopy}`);
     return boundingBoxCopy;
   };
 
@@ -393,8 +352,6 @@ function GameRoom({
     console.log("missing hand");
     return null;
   }
-
-  // TODO add state for card bounding boxes
 
   return (
     <div className="gameRoom">
