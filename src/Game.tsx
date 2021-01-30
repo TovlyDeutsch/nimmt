@@ -16,9 +16,9 @@ import JoinGame from "./JoinGame";
 import { useFirebaseRef } from "./useFirebaseRef";
 import WaitingRoom from "./WaitingRoom";
 
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+// function getRandomInt(max: number) {
+//   return Math.floor(Math.random() * Math.floor(max));
+// }
 
 // const BOARD_KEY = "game" + getRandomInt(100000000).toString();
 // console.log("loading game " + BOARD_KEY);
