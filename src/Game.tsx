@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import GameRoom from "./GameRoom";
 import {
   addPlayer,
@@ -19,10 +20,15 @@ function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const BOARD_KEY = "game" + getRandomInt(100000000).toString();
-console.log("loading game " + BOARD_KEY);
+// const BOARD_KEY = "game" + getRandomInt(100000000).toString();
+// console.log("loading game " + BOARD_KEY);
+
+type urlParams = {
+  gameId: string;
+};
 
 function Game() {
+  let { gameId } = useParams<urlParams>();
   // const location = useLocation();
   // TODO make this based on route
 
@@ -30,7 +36,7 @@ function Game() {
     gameData,
     updateGameWithFunction,
     gameDataLoading,
-  ] = useFirebaseRef<GameData>(`testGame1/gameData/${BOARD_KEY}`);
+  ] = useFirebaseRef<GameData>(`testGame1/gameData/${gameId}`);
 
   const [name, setName] = useState<string | null>(null);
 
