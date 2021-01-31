@@ -118,3 +118,12 @@ form {
   margin-left: 20px;
   text-align: center;
 }
+
+.simpleInput {
+  width: 100%;
+  border: 1px solid;
+  border-radius: 4;
+  padding: 6px 8px;
+  outline: none;
+  appearance: none;
+}

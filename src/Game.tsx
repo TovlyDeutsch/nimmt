@@ -55,6 +55,7 @@ function Game() {
           setName(name);
         }}
         disabled={gameDataLoading}
+        gameId={gameId}
       />
     );
   } else if (!gameData.started) {
