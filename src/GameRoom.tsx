@@ -140,6 +140,14 @@ function Card({
     setCardInBoard,
   ]);
 
+  const pointsToCardColor: Record<number, string> = {
+    1: "black",
+    2: "#3434ff",
+    3: "#c300e6",
+    5: "#fca103",
+    7: "#de0000",
+  };
+
   return (
     <div
       ref={cardDivRef}
@@ -148,8 +156,10 @@ function Card({
         card: true,
         selectedCard: card.selected,
       })}
+      style={{ color: pointsToCardColor[card.points] }}
     >
-      {card.number}
+      <div className="cardPips">{"•".repeat(card.points)}</div>
+      <div className="cardNumber">{card.number}</div>
     </div>
   );
 }

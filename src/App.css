@@ -13,13 +13,28 @@ form {
 }
 
 .card {
-  display: inline-block;
-  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 5px;
   border-radius: 5px;
   background-color: white;
   --card-width: 60px;
   width: var(--card-width);
   height: calc(var(--card-width) * (3.5 / 2.5));
+}
+
+.cardNumber {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.cardPips {
+  font-size: 12px;
+  line-height: 5px;
+  font-weight: bold;
 }
 
 .row .card {

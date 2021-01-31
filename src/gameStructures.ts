@@ -48,7 +48,18 @@ export interface GameData {
 
 function genCard(number: number, cardState: CardState): Card {
   // TODO figure out how to determine points
-  return { number: number, points: 1, selected: false, cardState };
+  let points = 1;
+  if (number === 55) {
+    points = 7;
+  } else if (number % 11 === 0) {
+    points = 5;
+  } else if (number % 10 === 0) {
+    points = 3;
+  } else if (number % 5 === 0) {
+    points = 2;
+  }
+
+  return { number: number, points: points, selected: false, cardState };
 }
 
 function genDeck() {
