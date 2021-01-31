@@ -28,6 +28,10 @@ form {
   height: var(--card-height);
 }
 
+.hand .card {
+  cursor: pointer;
+}
+
 .backing {
   position: absolute;
   z-index: -1;
