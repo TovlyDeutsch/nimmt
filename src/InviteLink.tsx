@@ -11,9 +11,12 @@ export function InviteLink({ link }: { link: string }) {
   }
   return (
     <div className={"sharing"}>
-      To invite someone to play, share this URL:
+      <label htmlFor="shareLink">
+        To invite someone to play, share this URL:
+      </label>
       <span className={"shareLink"}>
         <input
+          id="shareLink"
           className={"simpleInput"}
           readOnly
           value={link}

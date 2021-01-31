@@ -22,6 +22,7 @@ function JoinGame({ onNameSubmit, disabled, link }: JoinGamePropTypes) {
       >
         <TextField
           label="Name"
+          id="player-name"
           onChange={(event) => setName(event.target.value)}
         />
 
