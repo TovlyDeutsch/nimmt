@@ -76,10 +76,14 @@ form {
 
 .playerList {
   margin-top: 1em;
+  flex-grow: 1;
+}
+
+.gamePlayerList {
   margin-left: 10px;
   border-left: 1px solid black;
-  flex-grow: 1;
   text-align: right;
+  list-style: none;
 }
 
 .cardsToPlay {

@@ -5,6 +5,7 @@ import {
   addPlayer,
   checkEndAndstartNewRoundIfNeccessary,
   GameData,
+  isGameOver,
   markCardInBoard,
   playCardInRow,
   processNextCardToPlay,
@@ -13,6 +14,7 @@ import {
   startGame,
 } from "./gameStructures";
 import JoinGame from "./JoinGame";
+import { PlayerList } from "./PlayerList";
 import { useFirebaseRef } from "./useFirebaseRef";
 import WaitingRoom from "./WaitingRoom";
 
@@ -67,21 +69,30 @@ function Game() {
   }
   console.log(`rendering game room with name ${name}`);
 
-  return (
-    <GameRoom
-      gameData={gameData}
-      name={name}
-      onCardClick={(card) => {
-        updateGameWithFunction(selectCardForPlayer(name, card.number));
-      }}
-      onSelectRow={(rowIndex) => {
-        updateGameWithFunction(playCardInRow(rowIndex, true));
-      }}
-      onCardAddedToBoard={(cardToPlayIndex) => {
-        updateGameWithFunction(markCardInBoard(cardToPlayIndex));
-      }}
-    />
-  );
+  if (!isGameOver(gameData)) {
+    return (
+      <GameRoom
+        gameData={gameData}
+        name={name}
+        onCardClick={(card) => {
+          updateGameWithFunction(selectCardForPlayer(name, card.number));
+        }}
+        onSelectRow={(rowIndex) => {
+          updateGameWithFunction(playCardInRow(rowIndex, true));
+        }}
+        onCardAddedToBoard={(cardToPlayIndex) => {
+          updateGameWithFunction(markCardInBoard(cardToPlayIndex));
+        }}
+      />
+    );
+  } else {
+    return (
+      <div className="center">
+        <h1>Game Over</h1>
+        <PlayerList players={gameData.players} gameOver={true} />
+      </div>
+    );
+  }
 }
 
 export default Game;

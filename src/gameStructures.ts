@@ -356,6 +356,14 @@ export const checkEnd = (players: Array<Player>) => {
   return players.find((player) => player.points <= 0) !== undefined;
 };
 
+export const isGameOver = (gameData: GameData) => {
+  return (
+    checkEnd(gameData.players) &&
+    gameData.players.length > 0 &&
+    gameData.players[0].hand.length !== 0
+  );
+};
+
 export const checkEndAndstartNewRoundIfNeccessary: FirebaseDbUpdater<GameData> = (
   gameData
 ) => {
