@@ -1,3 +1,4 @@
+import { CircularProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import GameRoom from "./GameRoom";
@@ -48,7 +49,11 @@ function Game() {
 
   console.log(`game started: ${gameData?.started}`);
   if (gameData === null) {
-    return <p>Loading</p>;
+    return (
+      <div className="center">
+        <CircularProgress />
+      </div>
+    );
   } else if (name === null) {
     return (
       <JoinGame

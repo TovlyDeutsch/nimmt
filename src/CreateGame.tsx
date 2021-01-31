@@ -12,6 +12,7 @@ function CreateGame() {
 
   return (
     <div className="center">
+      <h1>6 Nimmt</h1>
       <Button
         color="primary"
         variant="contained"

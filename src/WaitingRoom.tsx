@@ -11,8 +11,8 @@ type WaitingRoomProps = {
 function WaitingRoom({ onGameStart, players, link }: WaitingRoomProps) {
   return (
     <div className="waitingRoom center">
-      <h1>Players:</h1>
-
+      <h1>6 Nimmt Waiting Room</h1>
+      <h2>Players:</h2>
       {players.map((player, i) => (
         <p key={i}>{player.name}</p>
       ))}

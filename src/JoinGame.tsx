@@ -13,6 +13,7 @@ function JoinGame({ onNameSubmit, disabled, link }: JoinGamePropTypes) {
 
   return (
     <div className="center">
+      <h1>6 Nimmt</h1>
       <form
         onSubmit={(event) => {
           event.preventDefault();
