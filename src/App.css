@@ -11,6 +11,10 @@ form {
   align-items: center;
   gap: 10px;
 }
+:root {
+  --card-width: 60px;
+  --card-height: calc(var(--card-width) * (3.5 / 2.5));
+}
 
 .card {
   display: flex;
@@ -20,9 +24,14 @@ form {
   padding: 5px;
   border-radius: 5px;
   background-color: white;
-  --card-width: 60px;
   width: var(--card-width);
-  height: calc(var(--card-width) * (3.5 / 2.5));
+  height: var(--card-height);
+}
+
+.backing {
+  position: absolute;
+  z-index: -1;
+  transform: translateY(calc(var(--card-height) * -1));
 }
 
 .cardNumber {

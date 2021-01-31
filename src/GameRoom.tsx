@@ -44,6 +44,7 @@ type CardProps = {
   ) => void;
   animateFromBoundingBox?: ClientRect;
   setCardInBoard?: () => void;
+  showEmptyBack?: boolean;
 };
 type HandProps = {
   hand: HandType;
@@ -97,6 +98,7 @@ function Card({
     console.log("default");
   },
   animateFromBoundingBox,
+  showEmptyBack = false,
 }: CardProps) {
   const measuredPosition = useRef(false);
   const cardDivRef = useRef<HTMLDivElement | null>(null);
@@ -149,17 +151,20 @@ function Card({
   };
 
   return (
-    <div
-      ref={cardDivRef}
-      onClick={() => onCardClick(card)}
-      className={classnames({
-        card: true,
-        selectedCard: card.selected,
-      })}
-      style={{ color: pointsToCardColor[card.points] }}
-    >
-      <div className="cardPips">{"•".repeat(card.points)}</div>
-      <div className="cardNumber">{card.number}</div>
+    <div>
+      <div
+        ref={cardDivRef}
+        onClick={() => onCardClick(card)}
+        className={classnames({
+          card: true,
+          selectedCard: card.selected,
+        })}
+        style={{ color: pointsToCardColor[card.points] }}
+      >
+        <div className="cardPips">{"•".repeat(card.points)}</div>
+        <div className="cardNumber">{card.number}</div>
+      </div>
+      {showEmptyBack && <div className="card emptyCard backing"></div>}
     </div>
   );
 }
@@ -190,6 +195,7 @@ function Row({
             : undefined
         }
         setCardInBoard={setCardInBoard}
+        showEmptyBack={true}
       />
     );
   });
