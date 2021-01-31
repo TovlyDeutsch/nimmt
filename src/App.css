@@ -120,10 +120,18 @@ form {
 }
 
 .simpleInput {
-  width: 100%;
+  width: 400px;
   border: 1px solid;
   border-radius: 4;
   padding: 6px 8px;
   outline: none;
   appearance: none;
+}
+
+.shareLink {
+  display: flex;
+}
+
+.sharing {
+  margin-top: 40px;
 }

@@ -1,6 +1,6 @@
 import { Button, IconButton, TextField, Tooltip } from "@material-ui/core";
-// import DoneIcon from "@material-ui/icons/Done";
-// import LinkIcon from "@material-ui/icons/Link";
+import DoneIcon from "@material-ui/icons/Done";
+import LinkIcon from "@material-ui/icons/Link";
 import { useState } from "react";
 
 type JoinGamePropTypes = {
@@ -16,7 +16,7 @@ function InviteLink({ link }: { link: string }) {
     navigator.clipboard.writeText(link).then(() => setCopiedLink(true));
   }
   return (
-    <div>
+    <div className={"sharing"}>
       To invite someone to play, share this URL:
       <span className={"shareLink"}>
         <input
@@ -30,7 +30,7 @@ function InviteLink({ link }: { link: string }) {
           title={copiedLink ? "Link copied" : "Copy link"}
         >
           <IconButton onClick={handleCopy}>
-            {/* {copiedLink ? <DoneIcon /> : <LinkIcon />} */}
+            {copiedLink ? <DoneIcon /> : <LinkIcon />}
           </IconButton>
         </Tooltip>
       </span>
