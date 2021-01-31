@@ -1,6 +1,6 @@
 {
   "name": "nimmt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.2",
@@ -13,6 +13,7 @@
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "@types/react-router-dom": "^5.1.7",
+    "@types/classnames": "^2.2.11",
     "classnames": "^2.2.6",
     "firebase": "^8.2.3",
     "react": "^17.0.1",
@@ -46,8 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/classnames": "^2.2.11"
   }
 }
