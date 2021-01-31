@@ -33,6 +33,8 @@ function Game() {
 
   const [name, setName] = useState<string | null>(null);
 
+  const link = `${window.location.origin}/${gameId}`;
+
   useEffect(() => {
     // TODO make these into one function
     if (gameData === null) {
@@ -55,7 +57,7 @@ function Game() {
           setName(name);
         }}
         disabled={gameDataLoading}
-        gameId={gameId}
+        link={link}
       />
     );
   } else if (!gameData.started) {
@@ -65,6 +67,7 @@ function Game() {
           updateGameWithFunction(startGame);
         }}
         players={gameData.players}
+        link={link}
       />
     );
   }

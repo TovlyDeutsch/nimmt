@@ -1,47 +1,15 @@
-import { Button, IconButton, TextField, Tooltip } from "@material-ui/core";
-import DoneIcon from "@material-ui/icons/Done";
-import LinkIcon from "@material-ui/icons/Link";
+import { Button, TextField } from "@material-ui/core";
 import { useState } from "react";
+import { InviteLink } from "./InviteLink";
 
 type JoinGamePropTypes = {
   onNameSubmit: (name: string) => void;
   disabled: boolean;
-  gameId: string;
+  link: string;
 };
 
-function InviteLink({ link }: { link: string }) {
-  const [copiedLink, setCopiedLink] = useState(false);
-
-  function handleCopy() {
-    navigator.clipboard.writeText(link).then(() => setCopiedLink(true));
-  }
-  return (
-    <div className={"sharing"}>
-      To invite someone to play, share this URL:
-      <span className={"shareLink"}>
-        <input
-          className={"simpleInput"}
-          readOnly
-          value={link}
-          onFocus={(event: any) => event.target.select()}
-        />
-        <Tooltip
-          placement="top"
-          title={copiedLink ? "Link copied" : "Copy link"}
-        >
-          <IconButton onClick={handleCopy}>
-            {copiedLink ? <DoneIcon /> : <LinkIcon />}
-          </IconButton>
-        </Tooltip>
-      </span>
-    </div>
-  );
-}
-
-function JoinGame({ onNameSubmit, disabled, gameId }: JoinGamePropTypes) {
+function JoinGame({ onNameSubmit, disabled, link }: JoinGamePropTypes) {
   const [name, setName] = useState("");
-
-  const link = `${window.location.origin}/${gameId}`;
 
   return (
     <div className="center">
