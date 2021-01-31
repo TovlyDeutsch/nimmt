@@ -70,7 +70,7 @@ function animateElement(
   const currentBox = domNode.getBoundingClientRect();
   const changeInX = newBoundingBox.left - currentBox.left;
   const changeInY = newBoundingBox.top - currentBox.top;
-  console.log(`change x ${changeInX}`);
+  // console.log(`change x ${changeInX}`);
   const animationTime = 2000;
 
   requestAnimationFrame(() => {
@@ -95,7 +95,7 @@ function Card({
     boundingBox: ClientRect | null
   ) => {},
   setCardInBoard = () => {
-    console.log("default");
+    // console.log("default");
   },
   animateFromBoundingBox,
   showEmptyBack = false,
@@ -105,14 +105,14 @@ function Card({
   const animated = useRef(false);
 
   useLayoutEffect(() => {
-    console.log(`animatefrom bounding ${animateFromBoundingBox}`);
-    console.log(`current el ${cardDivRef.current}`);
+    // console.log(`animatefrom bounding ${animateFromBoundingBox}`);
+    // console.log(`current el ${cardDivRef.current}`);
     if (
       cardDivRef.current &&
       animated.current === false &&
       animateFromBoundingBox
     ) {
-      console.log("going to animate");
+      // console.log("going to animate");
       animateElement(
         cardDivRef.current,
         animateFromBoundingBox,
@@ -124,9 +124,9 @@ function Card({
       if (cardDivRef === null) {
         return;
       }
-      console.log(`calling for set bbox for ${card.number}`);
-      console.log(`node ${cardDivRef}`);
-      console.log(`node bbox ${cardDivRef.current!.getBoundingClientRect()}`);
+      // console.log(`calling for set bbox for ${card.number}`);
+      // console.log(`node ${cardDivRef}`);
+      // console.log(`node bbox ${cardDivRef.current!.getBoundingClientRect()}`);
       measuredPosition.current = true;
       setBoundingBoxForCardToPlay(
         card.number,
@@ -178,28 +178,21 @@ function Row({
   cardToAnimate,
   setCardInBoard,
 }: RowProps) {
-  console.log(cardToAnimate);
-  let rowOfCards = row.map((card, i) => {
-    console.log(`rendering card ${card.number}`);
-    console.log(
-      cardToAnimate && cardToAnimate[0] === card.number,
-      cardToAnimate
-    );
-    return (
-      <Card
-        card={card}
-        key={i}
-        animateFromBoundingBox={
-          cardToAnimate && cardToAnimate[0] === card.number
-            ? cardToAnimate[1]
-            : undefined
-        }
-        setCardInBoard={setCardInBoard}
-        showEmptyBack={true}
-      />
-    );
-  });
-  console.log(`row length before push ${rowOfCards.length}`);
+  // console.log(cardToAnimate);
+  let rowOfCards = row.map((card, i) => (
+    <Card
+      card={card}
+      key={i}
+      animateFromBoundingBox={
+        cardToAnimate && cardToAnimate[0] === card.number
+          ? cardToAnimate[1]
+          : undefined
+      }
+      setCardInBoard={setCardInBoard}
+      showEmptyBack={true}
+    />
+  ));
+  // console.log(`row length before push ${rowOfCards.length}`);
   for (let i = row.length; i < CARDS_PER_ROW; i++) {
     rowOfCards.push(<EmptyCard key={i} />);
   }
@@ -216,7 +209,7 @@ function Row({
       </Button>
     );
   }
-  console.log(`row length after push ${rowOfCards.length}`);
+  // console.log(`row length after push ${rowOfCards.length}`);
   return <div className="row">{rowOfCards}</div>;
 }
 
@@ -256,7 +249,7 @@ function Board({
   // let cardToPlayIndex: number | undefined;
   let cardToAnimateIndex: number | undefined;
   if (cardsToPlay && cardsToPlay.length > 0) {
-    console.log("new board");
+    // console.log("new board");
     cardToAnimateIndex = cardsToPlay.findIndex(
       (card) => card.cardState === CardState.playingAnimation
     );
@@ -288,7 +281,7 @@ function Board({
           selectable={selectableRows}
           cardToAnimate={cardToAnimate}
           setCardInBoard={() => {
-            console.log(`Card to animate index ${cardToAnimateIndex}`);
+            // console.log(`Card to animate index ${cardToAnimateIndex}`);
             if (cardToAnimateIndex !== undefined) {
               onCardAddedToBoard(cardToAnimateIndex);
             }
@@ -371,7 +364,7 @@ function GameRoom({
     boundingBox: ClientRect | null
   ) => {
     setCardsToPlayBoundingBoxes((currentBoundingBoxes: BoundingBoxes) => {
-      console.log(`getting bbox ${JSON.stringify(boundingBox)}`);
+      // console.log(`getting bbox ${JSON.stringify(boundingBox)}`);
       return {
         ...currentBoundingBoxes,
         [cardNumber]: boundingBox,
@@ -380,13 +373,13 @@ function GameRoom({
   };
 
   if (gameData === null) {
-    console.log("no game data");
+    // console.log("no game data");
     return null;
   }
 
   const hand = gameData.players.find((player) => player.name === name)?.hand;
   if (!hand) {
-    console.log("missing hand");
+    // console.log("missing hand");
     return null;
   }
 

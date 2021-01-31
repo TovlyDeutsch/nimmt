@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import firebase from "./firebaseInitialize";
 
 /**
@@ -23,7 +22,7 @@ export function useFirebaseRef<T>(
     const dataRef = firebase.database().ref(path);
     const update = (snapshot: firebase.database.DataSnapshot) => {
       const retrievedValue = snapshot.val();
-      // console.log(retrievedValue);
+      // // console.log(retrievedValue);
       setValue(retrievedValue === null ? null : JSON.parse(retrievedValue));
       setLoading(false);
     };

@@ -137,7 +137,7 @@ function dealPlayers(gameData: GameData, players: Array<Player>) {
 
 export const setUpGame: FirebaseDbUpdater<GameData> = (existingGame) => {
   if (existingGame === null) {
-    console.log("settting up game");
+    // console.log("settting up game");
     return {
       started: false,
       board: [],
@@ -147,7 +147,7 @@ export const setUpGame: FirebaseDbUpdater<GameData> = (existingGame) => {
     };
   }
 
-  console.log("already set up");
+  // console.log("already set up");
   return undefined;
 };
 
@@ -158,11 +158,11 @@ const startNewRound = (gameData: GameData) => {
 
 export const startGame: FirebaseDbUpdater<GameData> = (existingGame) => {
   if (existingGame.started) {
-    console.log("already started");
+    // console.log("already started");
     return undefined;
   }
 
-  console.log("starting up game");
+  // console.log("starting up game");
   existingGame.deck = genDeck();
   startNewRound(existingGame);
   existingGame.started = true;
@@ -171,10 +171,10 @@ export const startGame: FirebaseDbUpdater<GameData> = (existingGame) => {
 
 export const addPlayer = (playerName: string) => {
   const playerUpdater: FirebaseDbUpdater<GameData> = (existingGame) => {
-    console.log(existingGame);
-    console.log(existingGame.players);
-    console.log(typeof existingGame);
-    console.log("going to add " + playerName);
+    // console.log(existingGame);
+    // console.log(existingGame.players);
+    // console.log(typeof existingGame);
+    // console.log("going to add " + playerName);
     if (
       existingGame.players.map((player) => player.name).includes(playerName)
     ) {
@@ -240,16 +240,16 @@ function insertIntoCardsToPlayIfAllPlayersSelected(
 
 export const selectCardForPlayer = (playerName: string, cardNumber: number) => {
   const playerUpdater: FirebaseDbUpdater<GameData> = (gameData) => {
-    console.log(`selecting card ${cardNumber} for player ${playerName}`);
+    // console.log(`selecting card ${cardNumber} for player ${playerName}`);
     const hand = gameData.players.find((player) => player.name === playerName)
       ?.hand;
     if (!hand) {
       throw new Error(`Can't select card for missing palyer ${playerName}`);
     }
     hand.forEach((card) => {
-      console.log(
-        `setting card ${card.number} selected to ${card.number === cardNumber}`
-      );
+      // // console.log(
+      //   `setting card ${card.number} selected to ${card.number === cardNumber}`
+      // );
       card.selected = card.number === cardNumber;
     });
     gameData = insertIntoCardsToPlayIfAllPlayersSelected(gameData);
@@ -274,17 +274,17 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
       card.cardState !== CardState.onBoard &&
       card.cardState !== CardState.playingAnimation
   );
-  console.log(`card to play index: ${cardToPlayIndex}`);
+  // console.log(`card to play index: ${cardToPlayIndex}`);
   // wait for animation to finish
   if (
     cardToPlayIndex > 0 &&
     gameData.cardsToPlay[cardToPlayIndex - 1].cardState ===
       CardState.playingAnimation
   ) {
-    console.log(`stopping early b/c previous card is animating`);
+    // console.log(`stopping early b/c previous card is animating`);
     return undefined;
   }
-  console.log("got past stopping early");
+  // console.log("got past stopping early");
 
   if (
     gameData.cardsToPlay.every((card) => card.cardState === CardState.onBoard)
@@ -313,7 +313,7 @@ export const processNextCardToPlay: FirebaseDbUpdater<GameData> = (
     }
   }
   if (rowIndex === null) {
-    console.log("card waiting on player");
+    // console.log("card waiting on player");
     gameData.cardsToPlay[cardToPlayIndex].cardState = CardState.waitingOnPlayer;
     return gameData;
   }
@@ -353,7 +353,7 @@ export const playCardInRow = (rowIndex: number, clear: boolean) => {
 
 export const markCardInBoard = (cardToPlayIndex: number) => {
   const markCardInBoard: FirebaseDbUpdater<GameData> = (gameData) => {
-    console.log("mark in board");
+    // console.log("mark in board");
     if (gameData.cardsToPlay[cardToPlayIndex] === undefined) {
       return undefined;
     }

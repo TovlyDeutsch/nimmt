@@ -47,7 +47,7 @@ function Game() {
     }
   }, [gameData, updateGameWithFunction]);
 
-  console.log(`game started: ${gameData?.started}`);
+  // console.log(`game started: ${gameData?.started}`);
   if (gameData === null) {
     return (
       <div className="center">
@@ -76,7 +76,7 @@ function Game() {
       />
     );
   }
-  console.log(`rendering game room with name ${name}`);
+  // console.log(`rendering game room with name ${name}`);
 
   if (!isGameOver(gameData)) {
     return (
