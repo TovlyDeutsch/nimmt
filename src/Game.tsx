@@ -34,7 +34,7 @@ function Game() {
 
   const [name, setName] = useState<string | null>(null);
 
-  const link = `${window.location.origin}/${gameId}`;
+  const link = `${window.location.origin}/game/${gameId}`;
 
   useEffect(() => {
     // TODO make these into one function
