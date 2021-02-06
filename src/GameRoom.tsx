@@ -45,6 +45,7 @@ type CardProps = {
   animateFromBoundingBox?: ClientRect;
   setCardInBoard?: () => void;
   showEmptyBack?: boolean;
+  key: number;
 };
 type HandProps = {
   hand: HandType;
@@ -97,28 +98,31 @@ function Card({
   setCardInBoard = () => {
     // console.log("default");
   },
+  key,
   animateFromBoundingBox,
   showEmptyBack = false,
 }: CardProps) {
   const measuredPosition = useRef(false);
   const cardDivRef = useRef<HTMLDivElement | null>(null);
-  const animated = useRef(false);
+  // TBH I don't know why this animated ref was neccessary in the first place, but getting rid of it now as it's cauing issues
+  // const animated = useRef(false);
 
   useLayoutEffect(() => {
-    // console.log(`animatefrom bounding ${animateFromBoundingBox}`);
+    // console.log(
+    //   `card ${card.number} animatefrom bounding ${animateFromBoundingBox}`
+    // );
     // console.log(`current el ${cardDivRef.current}`);
-    if (
-      cardDivRef.current &&
-      animated.current === false &&
-      animateFromBoundingBox
-    ) {
+    // console.log(`key ${key} animated.current ${animated.current}`);
+    if (cardDivRef.current && animateFromBoundingBox) {
       // console.log("going to animate");
       animateElement(
         cardDivRef.current,
         animateFromBoundingBox,
         setCardInBoard
       );
-      animated.current = true;
+      // TOFIX why is this getting set true without animation
+      // console.log(`setting animate to true for card ${card.number} key ${key}`);
+      // animated.current = true;
       setBoundingBoxForCardToPlay(card.number, null);
     } else if (measuredPosition.current === false) {
       if (cardDivRef === null) {
@@ -138,7 +142,6 @@ function Card({
     cardDivRef,
     animateFromBoundingBox,
     setBoundingBoxForCardToPlay,
-    animated,
     setCardInBoard,
   ]);
 
@@ -178,7 +181,7 @@ function Row({
   cardToAnimate,
   setCardInBoard,
 }: RowProps) {
-  // console.log(cardToAnimate);
+  console.log(cardToAnimate);
   let rowOfCards = row.map((card, i) => (
     <Card
       card={card}
@@ -249,10 +252,10 @@ function Board({
   // let cardToPlayIndex: number | undefined;
   let cardToAnimateIndex: number | undefined;
   if (cardsToPlay && cardsToPlay.length > 0) {
-    // console.log("new board");
     cardToAnimateIndex = cardsToPlay.findIndex(
       (card) => card.cardState === CardState.playingAnimation
     );
+    // console.log(`cardToAnimateIndex: ${cardToAnimateIndex}`);
     // for (let [i, card] of prevCardsToPlay.entries()) {
     //   if (card.cardState === cardsToPlay[i].cardState) {
     //     changedCard = card;
@@ -281,7 +284,7 @@ function Board({
           selectable={selectableRows}
           cardToAnimate={cardToAnimate}
           setCardInBoard={() => {
-            // console.log(`Card to animate index ${cardToAnimateIndex}`);
+            console.log(`Card to animate index ${cardToAnimateIndex}`);
             if (cardToAnimateIndex !== undefined) {
               onCardAddedToBoard(cardToAnimateIndex);
             }
